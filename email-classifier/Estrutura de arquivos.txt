@@ -1,0 +1,12 @@
+email-classifier/
+│
+├── app.py
+├── classifier.py
+├── requirements.txt
+├── README.md
+└── examples/
+    └── sample_analysis.ipynb
+└── static/
+    └── styles.css
+└── templates/
+    └── index.html    

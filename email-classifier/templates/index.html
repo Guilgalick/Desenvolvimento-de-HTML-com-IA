@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classificador de Emails com IA</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Classificador de Emails com IA</h1>
+            <p class="subtitle">Classifique automaticamente seus emails e receba sugestões de resposta</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <h2 class="section-title">Insira o email para análise</h2>
+                <textarea id="email-content" placeholder="Cole o conteúdo do email aqui..."></textarea>
+                <button id="analyze-btn">Analisar Email</button>
+                
+                <div class="example-emails">
+                    <p class="example-title">Exemplos rápidos:</p>
+                    <div class="example-buttons">
+                        <button class="example-btn" data-example="productive1">Solicitação de Suporte</button>
+                        <button class="example-btn" data-example="productive2">Dúvida Técnica</button>
+                        <button class="example-btn" data-example="unproductive1">Agradecimento</button>
+                        <button class="example-btn" data-example="unproductive2">Felicitacões</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h2 class="section-title">Resultado da Análise</h2>
+                <div class="loader" id="loader">
+                    <div class="loader-spinner"></div>
+                    <p>Analisando email...</p>
+                </div>
+                <div id="results">
+                    <p class="placeholder">Os resultados da análise aparecerão aqui.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const analyzeBtn = document.getElementById('analyze-btn');
+            const emailContent = document.getElementById('email-content');
+            const resultsDiv = document.getElementById('results');
+            const loader = document.getElementById('loader');
+            const exampleButtons = document.querySelectorAll('.example-btn');
+            
+            // Exemplos de emails pré-definidos
+            const examples = {
+                productive1: "Prezados, estou com um problema no sistema de relatórios. Não consigo gerar o relatório de vendas do último trimestre. O sistema exibe a mensagem 'Erro 504: Timeout'. Gostaria de solicitar urgência na resolução deste problema, pois preciso apresentar esses dados em uma reunião amanhã. Agradeço desde já pela atenção.",
+                productive2: "Olá, gostaria de saber se há previsão para a implementação da funcionalidade de exportação em PDF no módulo financeiro. Essa feature seria muito útil para nossa equipe, que precisa compartilhar relatórios com stakeholders externos. Caso já exista essa opção, poderiam me orientar onde encontrá-la?",
+                unproductive1: "Bom dia! Gostaria de agradecer pelo excelente suporte prestado durante a implantação do novo sistema. A equipe foi extremamente prestativa e profissional, o que tornou toda a transição muito mais suave do que esperávamos. Parabéns pelo trabalho!",
+                unproductive2: "Caros colegas, quero parabenizar a todos pelo sucesso do último projeto. O lançamento foi um grande sucesso e recebemos muitos feedbacks positivos dos clientes. Isso só foi possível graças ao empenho e dedicação de cada um de vocês. Comemorem essa conquista!"
+            };
+            
+            // Configurar exemplos rápidos
+            exampleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const exampleType = this.getAttribute('data-example');
+                    emailContent.value = examples[exampleType];
+                });
+            });
+            
+            // Função para classificar o email (simulação de IA)
+            function classifyEmail(content) {
+                // Palavras-chave para classificação
+                const productiveKeywords = [
+                    'problema', 'erro', 'suporte', 'solicitação', 'urgente', 'dúvida', 
+                    'ajuda', 'não consigo', 'como fazer', 'implementação', 'funcionalidade',
+                    'resolução', 'atualização', 'caso', 'suporte técnico', 'relatório'
+                ];
+                
+                const unproductiveKeywords = [
+                    'obrigado', 'agradeço', 'parabéns', 'felicitações', 'congratulations',
+                    'agradecimento', 'obrigada', 'thanks', 'thank you', 'grato', 'comemoração',
+                    'sucesso', 'excelente', 'ótimo trabalho'
+                ];
+                
+                // Verificar correspondências
+                let productiveMatches = 0;
+                let unproductiveMatches = 0;
+                
+                productiveKeywords.forEach(word => {
+                    if (content.toLowerCase().includes(word)) productiveMatches++;
+                });
+                
+                unproductiveKeywords.forEach(word => {
+                    if (content.toLowerCase().includes(word)) unproductiveMatches++;
+                });
+                
+                // Determinar a categoria com base nas correspondências
+                if (productiveMatches > unproductiveMatches) {
+                    return 'Produtivo';
+                } else if (unproductiveMatches > productiveMatches) {
+                    return 'Improdutivo';
+                } else {
+                    // Empate - usar análise de sentimento simples
+                    if (content.includes('?') || content.includes('problema') || content.includes('ajuda')) {
+                        return 'Produtivo';
+                    } else {
+                        return 'Improdutivo';
+                    }
+                }
+            }
+            
+            // Função para gerar resposta automática
+            function generateResponse(content, category) {
+                if (category === 'Produtivo') {
+                    // Respostas para emails produtivos
+                    const responses = [
+                        "Agradecemos pelo seu contato. Nossa equipe técnica já foi notificada e está trabalhando na resolução do problema. Retornaremos em breve com uma atualização.",
+                        "Obrigado pela sua solicitação. Um de nossos especialistas entrará em contato para fornecer o suporte necessário dentro das próximas 24 horas.",
+                        "Recebemos sua dúvida e estamos analisando a melhor forma de ajudá-lo. Retornaremos em breve com mais informações.",
+                        "Agradecemos pelo feedback sobre a funcionalidade. Nossa equipe de desenvolvimento já foi notificada e avaliará sua sugestão."
+                    ];
+                    
+                    // Selecionar resposta com base no conteúdo
+                    if (content.toLowerCase().includes('erro') || content.toLowerCase().includes('problema')) {
+                        return responses[0];
+                    } else if (content.toLowerCase().includes('dúvida') || content.toLowerCase().includes('como')) {
+                        return responses[2];
+                    } else if (content.toLowerCase().includes('funcionalidade') || content.toLowerCase().includes('implementação')) {
+                        return responses[3];
+                    } else {
+                        return responses[1];
+                    }
+                } else {
+                    // Respostas para emails improdutivos
+                    const responses = [
+                        "Agradecemos muito pelo seu feedback positivo! Ficamos felizes em saber que nosso trabalho está sendo reconhecido.",
+                        "Muito obrigado pelas felicitações! É um prazer poder contribuir para o sucesso de sua empresa.",
+                        "Agradecemos suas palavras de incentivo. Nosso time se sente motivado com esse reconhecimento.",
+                        "Ficamos muito contentes com seu agradecimento. Estamos sempre à disposição para oferecer o melhor suporte."
+                    ];
+                    
+                    return responses[Math.floor(Math.random() * responses.length)];
+                }
+            }
+            
+            // Event listener para o botão de análise
+            analyzeBtn.addEventListener('click', function() {
+                const content = emailContent.value.trim();
+                
+                if (content === '') {
+                    alert('Por favor, insira o conteúdo do email para análise.');
+                    return;
+                }
+                
+                // Mostrar loader
+                loader.style.display = 'block';
+                resultsDiv.innerHTML = '';
+                
+                // Simular processamento com setTimeout
+                setTimeout(function() {
+                    // Classificar o email
+                    const category = classifyEmail(content);
+                    
+                    // Gerar resposta
+                    const response = generateResponse(content, category);
+                    
+                    // Criar HTML para resultados
+                    let resultsHTML = `
+                        <div class="classification">
+                            <span class="classification-badge ${category === 'Produtivo' ? 'productive' : 'unproductive'}">${category}</span>
+                            <span>Este email foi classificado como <strong>${category}</strong></span>
+                        </div>
+                    `;
+                    
+                    resultsHTML += `
+                        <div class="suggestion">
+                            <div class="suggestion-title">Sugestão de resposta automática:</div>
+                            <p>${response}</p>
+                        </div>
+                    `;
+                    
+                    // Esconder loader e mostrar resultados
+                    loader.style.display = 'none';
+                    resultsDiv.innerHTML = resultsHTML;
+                }, 1500); // Simular tempo de processamento
+            });
+        });
+    </script>
+</body>
+</html>

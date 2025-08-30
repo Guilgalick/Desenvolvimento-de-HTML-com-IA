@@ -1,0 +1,123 @@
+
+## 5. examples/sample_analysis.ipynb
+
+```python
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Análise de Classificação de Emails\n",
+    "\n",
+    "Este notebook demonstra o funcionamento do classificador de emails com exemplos práticos."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Importar o classificador\n",
+    "import sys\n",
+    "sys.path.append('..')\n",
+    "from classifier import EmailClassifier\n",
+    "\n",
+    "# Inicializar o classificador\n",
+    "classifier = EmailClassifier()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Testar com exemplos\n",
+    "test_emails = [\n",
+    "    \"Preciso de ajuda com o sistema, não consigo fazer login.\",\n",
+    "    \"Obrigado pelo suporte excelente na implantação do projeto!\",\n",
+    "    \"Como faço para exportar os relatórios em PDF?\",\n",
+    "    \"Parabéns pelo trabalho impecável!\",\n",
+    "    \"O sistema está apresentando lentidão excessiva nas consultas.\"\n",
+    "]\n",
+    "\n",
+    "for email in test_emails:\n",
+    "    result = classifier.classify_email(email)\n",
+    "    response = classifier.generate_response(email, result[\"category\"])\n",
+    "    print(f\"Email: {email}\")\n",
+    "    print(f\"Categoria: {result['category']} (Confiança: {result['confidence']}%)\")\n",
+    "    print(f\"Resposta sugerida: {response}\")\n",
+    "    print(\"-\" * 80)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Analisar o pré-processamento de texto\n",
+    "sample_text = \"Preciso de ajuda URGENTE com o sistema de login!!!\"\n",
+    "processed = classifier.preprocess_text(sample_text)\n",
+    "print(f\"Texto original: {sample_text}\")\n",
+    "print(f\"Texto processado: {processed}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Teste com seus próprios exemplos\n",
+    "\n",
+    "Experimente classificar seus próprios emails:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "custom_email = \"\"\"\n",
+    "Olá equipe de suporte,\n",
+    "\n",
+    "Estou enfrentando dificuldades para acessar o módulo financeiro do sistema.\n",
+    "Quando tento gerar um relatório, recebo uma mensagem de erro 500.\n",
+    "\n",
+    "Podem me ajudar urgentemente?\n",
+    "\n",
+    "Atenciosamente,\n",
+    "João Silva\n",
+    "\"\"\"\n",
+    "\n",
+    "result = classifier.classify_email(custom_email)\n",
+    "response = classifier.generate_response(custom_email, result[\"category\"])\n",
+    "print(f\"Categoria: {result['category']} (Confiança: {result['confidence']}%)\")\n",
+    "print(f\"Resposta sugerida: {response}\")"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "greg",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.10"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
