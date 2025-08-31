@@ -65,3 +65,14 @@ def get_examples():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
+# No final do seu app.py, adicione:
+if __name__ == '__main__':
+    app.run(debug=True)
+else:
+    # Para o Vercel
+    import sys
+    from pathlib import Path
+    sys.path.append(str(Path(__file__).parent))
+    
+    # Isso é necessário para o Vercel encontrar seus módulos
+    from classifier import sua_funcao_principal  # ajuste conforme necessário    
