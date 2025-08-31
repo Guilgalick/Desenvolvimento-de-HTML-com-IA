@@ -5,6 +5,19 @@ import json
 app = Flask(__name__)
 
 @app.route('/')
+def home():
+    # Lê o index.html diretamente da raiz
+    with open('index.html', 'r', encoding='utf-8') as f:
+        return f.read()
+
+@app.route('/<path:path>')
+def static_file(path):
+    return app.send_static_file(path)
+
+if __name__ == '__main__':
+    app.run(debug=False, host='0.0.0.0', port=5000)
+
+@app.route('/')
 def index():
     return render_template('index.html')
 
